@@ -1,69 +1,366 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Plotly Charts</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Research Graph Index</titltle>
+
+  //fonts.googleapis.com">
+  //fonts.gstatic.com" crossorigigin>
+  //fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --bg: #f6f4ef;
+      --surface: #fcfbf8;
+      --surface-2: #f1ede6;
+      --border: #ddd7cf;
+      --text: #1f1c17;
+      --muted: #6f6a63;
+      --accent: #0d6b6f;
+      --accent-soft: #d9e8e6;
+      --shadow: 0 10px 30px rgba(28, 24, 18, 0.08);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --max: 980px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 0 20px;
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(13, 107, 111, 0.08), transparent 28%),
+        radial-gradient(circle at top right, rgba(13, 107, 111, 0.05), transparent 22%),
+        var(--bg);
+      color: var(--text);
       line-height: 1.6;
-      background: #f7f7f7;
-      color: #222;
     }
+
+    .page {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 40px 20px 72px;
+    }
+
+    .hero {
+      padding: 28px 0 20px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
     h1 {
-      margin-bottom: 10px;
+      margin: 0 0 12px;
+      font-family: "Instrument Serif", serif;
+      font-size: clamp(2.4rem, 5vw, 4.4rem);
+      line-height: 0.96;
+      letter-spacing: -0.03em;
+      font-weight: 400;
+      max-width: 10ch;
     }
-    p {
-      margin-bottom: 20px;
+
+    .intro {
+      margin: 0;
+      max-width: 62ch;
+      color: var(--muted);
+      font-size: 1.02rem;
     }
-    ul {
-      padding-left: 20px;
+
+    .panel {
+      background: rgba(252, 251, 248, 0.86);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-top: 28px;
     }
-    li {
-      margin-bottom: 12px;
+
+    .section + .section {
+      margin-top: 28px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
     }
-    a {
-      color: #005bbb;
+
+    .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .section-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .chart-link {
+      display: block;
       text-decoration: none;
+      color: inherit;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
     }
-    a:hover {
-      text-decoration: underline;
+
+    .chart-link:hover {
+      transform: translateY(-2px);
+      border-color: #bfc9c8;
+      box-shadow: 0 10px 24px rgba(23, 31, 31, 0.08);
+      background: #fff;
     }
-    .card {
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 24px;
+
+    .chart-link:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .chart-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .chart-name {
+      margin: 0;
+      font-size: 0.98rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .chart-tag {
+      flex-shrink: 0;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .chart-desc {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (min-width: 760px) {
+      .grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 24px 16px 56px;
+      }
+
+      .panel {
+        padding: 20px;
+      }
+
+      .chart-top {
+        align-items: flex-start;
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>My Plotly Charts</h1>
-    <p>Open any chart below:</p>
+  <main class="page">
+    <header class="hero">
+      <span class="eyebrow">Interactive research figures</span>
+      <h1>Research graph index</h1>
+      <p class="intro">
+        A live collection of interactive Plotly figures grouped by the core PhD narrative and supporting side investigations.
+        Open any graph below to explore the full interactive view.
+      </p>
+    </header>
 
-    <ul>
-      <li><a href="2025-unreinforced-shrinkage.html">unreinforced shrinkage</a></li>
-      <li><a href="2025-shrinkage-ingress.html">Ø150 reinforced shrinkage</a></li>
-      <li><a href="restrianed-cracking-strain.html">■ restrained cracking</a></li>
-      <li><a href="restrianed-cracking-stress.html">■ restrained cracking stress</a>
-      <li><a href="effective-area-after-cracking.html">■ Effective area after cracking</a>
-      <li><a href="predicted-strain-with-reinforcement.html"> Predicted strain with reinforcement percentage</a>
-      <li><a href="Tensile-stress-outer-shell-PC.html"> Stress in outer shell with shrinkage PC based on measured values</a>
-      <li><a href="Tensile-stress-outer-shell-PC-EN.html"> Stress in outer shell with shrinkage PC based on EN</a>
-      <li><a href="predicted-vs-measured-strain-for-t25-to-t60-using-150-core-strain-as-a-baseline.html"> Predictedvs measured strain for t25→t60 using 150 core strain as a baseline</a>
-      <li><a href="predicted-vs-measured-strain-for-t25-to-t60-using-100-core-strain-as-a-baseline.html"> Predicted vs measured strain for t25→t60 using 100 core strain as a baseline</a>
-      <li><a href="predicted-vs-measured-strain-for-t25-to-t60-using-ExtVW-strain-as-a-baseline.html"> Predicted vs measured strain for t25→t60 using Ext VW strain as a baseline</a>
-      <li><a href="predicted-stress-for-t25-to-t60-using-ExtVW-strain-as-a-baseline.html"> Predicted stress for t25→t60 shrinkage using Ext VW strain as a baseline</a>
-      <li><a href="Predicted-strain-ingress.html"> Predicted shrinkage ingress </a>
-      <li><a href="free-strain-from-5-cyl-fit.html"> εfree theoretical vs Ext guage </a>
+    <section class="panel">
+      <div class="section">
+        <div class="section-header">
+          <h2 class="section-title">PhD main story line</h2>
+          <p class="section-note">Core figures supporting the primary research narrative</p>
+        </div>
 
-</li>
-    </ul>
-  </div>
+        <div class="grid">
+          <a class="chart-link" href="2025-unreinforced-shrinkage.html">
+            <div class="chart-top">
+              <h3 class="chart-name">Unreinforced shrinkage</h3>
+              <span class="chart-tag">Main story</span>
+            </div>
+            <p class="chart-desc">Baseline shrinkage behaviour for the unreinforced specimens.</p>
+          </a>
+
+          <a class="chart-link" href="2025-shrinkage-ingress.html">
+            <div class="chart-top">
+              <h3 class="chart-name">Ø150 reinforced shrinkage</h3>
+              <span class="chart-tag">Main story</span>
+            </div>
+            <p class="chart-desc">Shrinkage development for reinforced specimens in the main series.</p>
+          </a>
+
+          <a class="chart-link" href="restrianed-cracking-strain.html">
+            <div class="chart-top">
+              <h3 class="chart-name">Restrained cracking strain</h3>
+              <span class="chart-tag">Main story</span>
+            </div>
+            <p class="chart-desc">Measured strain response associated with restrained cracking.</p>
+          </a>
+
+          <a class="chart-link" href="restrianed-cracking-stress.html">
+            <div class="chart-top">
+              <h3 class="chart-name">Restrained cracking stress</h3>
+              <span class="chart-tag">Main story</span>
+            </div>
+            <p class="chart-desc">Stress development associated with restrained cracking behaviour.</p>
+          </a>
+
+          <a class="chart-link" href="effective-area-after-cracking.html">
+            <div class="chart-top">
+              <h3 class="chart-name">Effective area after cracking</h3>
+              <span class="chart-tag">Main story</span>
+            </div>
+            <p class="chart-desc">Post-cracking effective area relationships used in the analysis.</p>
+          </a>
+
+          <a class="chart-link" href="predicted-strain-with-reinforcement.html">
+            <div class="chart-top">
+              <h3 class="chart-name">Predicted strain with reinforcement percentage</h3>
+              <span class="chart-tag">Main story</span>
+            </div>
+            <p class="chart-desc">Predicted strain trends as reinforcement ratio varies.</p>
+          </a>
+
+          <a class="chart-link" href="Tensile-stress-outer-shell-PC.html">
+            <div class="chart-top">
+              <h3 class="chart-name">Stress in outer shell with shrinkage PC based on measured values</h3>
+              <span class="chart-tag">Main story</span>
+            </div>
+            <p class="chart-desc">Outer-shell tensile stress estimated from measured shrinkage inputs.</p>
+          </a>
+
+          <a class="chart-link" href="Tensile-stress-outer-shell-PC-EN.html">
+            <div class="chart-top">
+              <h3 class="chart-name">Stress in outer shell with shrinkage PC based on EN</h3>
+              <span class="chart-tag">Main story</span>
+            </div>
+            <p class="chart-desc">Outer-shell tensile stress estimated using EN-based shrinkage inputs.</p>
+          </a>
+
+          <a class="chart-link" href="predicted-vs-measured-strain-for-t25-to-t60-using-150-core-strain-as-a-baseline.html">
+            <div class="chart-top">
+              <h3 class="chart-name">Predicted vs measured strain for t25→t60 using 150 core strain as a baseline</h3>
+              <span class="chart-tag">Main story</span>
+            </div>
+            <p class="chart-desc">Comparison between measured and predicted strain using the 150-core baseline.</p>
+          </a>
+
+          <a class="chart-link" href="predicted-vs-measured-strain-for-t25-to-t60-using-100-core-strain-as-a-baseline.html">
+            <div class="chart-top">
+              <h3 class="chart-name">Predicted vs measured strain for t25→t60 using 100 core strain as a baseline</h3>
+              <span class="chart-tag">Main story</span>
+            </div>
+            <p class="chart-desc">Comparison between measured and predicted strain using the 100-core baseline.</p>
+          </a>
+
+          <a class="chart-link" href="predicted-vs-measured-strain-for-t25-to-t60-using-ExtVW-strain-as-a-baseline.html">
+            <div class="chart-top">
+              <h3 class="chart-name">Predicted vs measured strain for t25→t60 using Ext VW strain as a baseline</h3>
+              <span class="chart-tag">Main story</span>
+            </div>
+            <p class="chart-desc">Predicted and measured strain comparison using external VW strain as the reference.</p>
+          </a>
+
+          <a class="chart-link" href="predicted-stress-for-t25-to-t60-using-ExtVW-strain-as-a-baseline.html">
+            <div class="chart-top">
+              <h3 class="chart-name">Predicted stress for t25→t60 shrinkage using Ext VW strain as a baseline</h3>
+              <span class="chart-tag">Main story</span>
+            </div>
+            <p class="chart-desc">Stress predictions tied to the external VW strain baseline.</p>
+          </a>
+
+          <a class="chart-link" href="Predicted-strain-ingress.html">
+            <div class="chart-top">
+              <h3 class="chart-name">Predicted shrinkage ingress</h3>
+              <span class="chart-tag">Main story</span>
+            </div>
+            <p class="chart-desc">Predicted ingress-related shrinkage trends in the main analysis stream.</p>
+          </a>
+
+          <a class="chart-link" href="free-strain-from-5-cyl-fit.html">
+            <div class="chart-top">
+              <h3 class="chart-name">εfree theoretical vs Ext gauge</h3>
+              <span class="chart-tag">Main story</span>
+            </div>
+            <p class="chart-desc">Theoretical free strain compared with the external gauge response.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2 class="section-title">Side quests</h2>
+          <p class="section-note">Supporting investigations and parallel threads</p>
+        </div>
+
+        <div class="grid">
+          <a class="chart-link" href="Agg-types-shrink-strain.html">
+            <div class="chart-top">
+              <h3 class="chart-name">Aggregate types shrink strain</h3>
+              <span class="chart-tag">Side quest</span>
+            </di           <p class="chart-desc">Shrinkage-strain comparison across different aggregate types.</p>
+          </a>
+        </div>
+      </div>
+
+      <p class="footer-note">
+        Hosted as static HTML so each figure remains interactive and easy to open directly from a live link.
+      </p>
+    </section>
+  </main>
 </body>
 </html>
